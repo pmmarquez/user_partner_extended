@@ -6,7 +6,7 @@
         Extend res.users and res.partner method and fields""",
 
     'description': """
-        -
+        - ADD res.users new field classification (custumer,vendor,admin)
     """,
 
     'author': "pmmarquez@gmx.com",

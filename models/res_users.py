@@ -5,3 +5,9 @@ from odoo import api, fields, models, _
 
 class Users(models.Model):
     _inherit = 'res.users'
+
+    classification = fields.Selection([
+        ('custumer', 'Customer'),
+        ('vendor', 'Vendor'),
+        ('admin', 'Administrator')
+        ], readonly=True)
