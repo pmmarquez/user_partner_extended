@@ -7,6 +7,7 @@
 
     'description': """
         - ADD res.users new field classification (custumer,vendor,admin)
+        - ADD res.partner several info fields
     """,
 
     'author': "pmmarquez@gmx.com",
