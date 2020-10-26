@@ -19,3 +19,5 @@ class Partner(models.Model):
     social_security = fields.Char('Social security number')
     iae_code = fields.Char('I.A.E code')
     dni = fields.Char('DNI number')
+
+    product_supply_ids = fields.One2many('product.supplierinfo', 'name')

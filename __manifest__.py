@@ -8,6 +8,8 @@
     'description': """
         - ADD res.users new field classification (custumer,vendor,admin)
         - ADD res.partner several info fields
+        - ADD product classification (service, cost)
+        - ADD partner product.supplierinfo relation to create subscriptions to products from partner creation
     """,
 
     'author': "pmmarquez@gmx.com",
@@ -15,7 +17,7 @@
     'category': 'Administration',
     'version': '0.1',
     
-    'depends': ['base'],
+    'depends': ['base','product'],
 
     # always loaded
     # 'data': [
