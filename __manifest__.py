@@ -10,6 +10,7 @@
         - ADD res.partner several info fields
         - ADD product classification (service, cost)
         - ADD partner product.supplierinfo relation to create subscriptions to products from partner creation
+        - ADD docs_check field to know when vendor needs documents check 
     """,
 
     'author': "pmmarquez@gmx.com",
@@ -20,11 +21,12 @@
     'depends': ['base','product'],
 
     # always loaded
-    # 'data': [
+    'data': [
     #     # 'security/ir.model.access.csv',
     #     'views/views.xml',
     #     'views/templates.xml',
-    # ],
+        'actions/ir_cron_partner_check.xml',
+    ],
     # only loaded in demonstration mode
     # 'demo': [
     #     'demo/demo.xml',

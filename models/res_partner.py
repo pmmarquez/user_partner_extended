@@ -21,3 +21,11 @@ class Partner(models.Model):
     dni = fields.Char('DNI number')
 
     product_supply_ids = fields.One2many('product.supplierinfo', 'name')
+
+    docs_check = fields.Boolean(default=True) #true when partner needs docs check
+
+    def set_docs_check(self):
+        users = self.env['res.users'].search([('classification', '=', 'vendor')])
+        for user in users:
+            user.partner_id.docs_check = True
+        return True
