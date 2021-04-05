@@ -44,8 +44,8 @@ class Partner(models.Model):
         # create account link
         s2s_data_account_link = {
             'account': account.get('id'),
-            'refresh_url':"http://45.93.100.18:8069/reauth",
-            'return_url': "http://45.93.100.18:8069/return",
+            'refresh_url':"http://45.93.100.189:1880/reauth",
+            'return_url': "http://45.93.100.189:1880/return",
             'type':'account_onboarding'
         }
 
