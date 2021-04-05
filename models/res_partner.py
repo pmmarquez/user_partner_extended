@@ -30,7 +30,7 @@ class Partner(models.Model):
             user.partner_id.docs_check = True
         return True
 
-    def stripe_express_connect_account(self):
+    def stripe_express_connect_account(self, reauth_url, return_url):
         payment_stripe = self.env['payment.acquirer'].search([('provider', '=', 'stripe')])
         # create express account
         s2s_data_account = {
@@ -41,28 +41,34 @@ class Partner(models.Model):
         account = payment_stripe._stripe_request('accounts', s2s_data_account)
 
         # create account link
-        link = self.stripe_connect_account_link(account.get('id'))
+        link = self.stripe_connect_account_link(account.get('id'), reauth_url, return_url)
+
+        return_data = {
+            'partner_id': self.id,
+            'account_id': account.get('id'),
+            'link': link.get('url'),
+        }
         
         # return link 
         if account.get('id') and link:
-            return link.get('url')
+            return return_data
         else:
             return False
     
-    def stripe_connect_account_link(self, account):
+    def stripe_connect_account_link(self, account_id, reauth_url, return_url):
         payment_stripe = self.env['payment.acquirer'].search([('provider', '=', 'stripe')])
 
         # create account link
         s2s_data_account_link = {
-            'account': account,
-            'refresh_url':'http://45.93.100.189:1880/reauth?account=' + account + '&partner=' + str(self.id),
-            'return_url': 'http://45.93.100.189:1880/return?account=' + account + '&partner=' + str(self.id),
+            'account': account_id,
+            'refresh_url': reauth_url + '?account_id=' + account_id + '&partner_id=' + str(self.id) + '&reauth_url=' + reauth_url,
+            'return_url': return_url + '?account_id=' + account_id + '&partner_id=' + str(self.id) + '&return_url=' + return_url,
             'type':'account_onboarding'
         }
         link = payment_stripe._stripe_request('account_links', s2s_data_account_link)
         
         # return link 
-        if account and link.get('url'):
+        if account_id and link.get('url'):
             return link
         else:
             return False
