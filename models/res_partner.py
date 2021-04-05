@@ -55,8 +55,8 @@ class Partner(models.Model):
         # create account link
         s2s_data_account_link = {
             'account': account,
-            'refresh_url':'http://45.93.100.189:1880/reauth?account=' + account + '&partner=' + self.id,
-            'return_url': 'http://45.93.100.189:1880/return?account=' + account + '&partner=' + self.id,
+            'refresh_url':'http://45.93.100.189:1880/reauth?account=' + account + '&partner=' + str(self.id),
+            'return_url': 'http://45.93.100.189:1880/return?account=' + account + '&partner=' + str(self.id),
             'type':'account_onboarding'
         }
         link = payment_stripe._stripe_request('account_links', s2s_data_account_link)
