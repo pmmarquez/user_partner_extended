@@ -83,7 +83,7 @@ class Partner(models.Model):
         response = payment_stripe._stripe_request('accounts/%s' % self.stripe_connect_account_id, data=False, method='DELETE')
         # return link 
         if response.get('deleted'):
-            self.stripe_connect_account_id = ''
+            self.stripe_connect_account_id = False
             self.stripe_connect_account_state = 'false'
             return response
         else:
