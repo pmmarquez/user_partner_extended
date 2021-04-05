@@ -37,7 +37,6 @@ class Partner(models.Model):
         s2s_data_account = {
             'type': 'express',
             'country': 'ES',
-            'name': self.name,
             'email': self.email,
         }
         account = payment_stripe._stripe_request('accounts', s2s_data_account)
