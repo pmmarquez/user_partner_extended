@@ -31,7 +31,6 @@ class Partner(models.Model):
         return True
 
     def stripe_express_connect_account(self):
-
         payment_stripe = self.env['payment.acquirer'].search([('provider', '=', 'stripe')])
         # create express account
         s2s_data_account = {
@@ -42,17 +41,28 @@ class Partner(models.Model):
         account = payment_stripe._stripe_request('accounts', s2s_data_account)
 
         # create account link
-        s2s_data_account_link = {
-            'account': account.get('id'),
-            'refresh_url':"http://45.93.100.189:1880/reauth",
-            'return_url': "http://45.93.100.189:1880/return",
-            'type':'account_onboarding'
-        }
-
-        link = payment_stripe._stripe_request('account_links', s2s_data_account_link)
+        link = self.stripe_connect_account_link(account.get('id'))
         
         # return link 
         if account.get('id') and link.get('url'):
+            return link.get('url')
+        else:
+            return False
+    
+    def stripe_connect_account_link(self, account):
+        payment_stripe = self.env['payment.acquirer'].search([('provider', '=', 'stripe')])
+
+        # create account link
+        s2s_data_account_link = {
+            'account': account,
+            'refresh_url':'http://45.93.100.189:1880/reauth?account=' + account + '&partner=' + self.id,
+            'return_url': 'http://45.93.100.189:1880/return?account=' + account + '&partner=' + self.id,
+            'type':'account_onboarding'
+        }
+        link = payment_stripe._stripe_request('account_links', s2s_data_account_link)
+        
+        # return link 
+        if account and link.get('url'):
             return link.get('url')
         else:
             return False
