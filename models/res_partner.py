@@ -44,7 +44,7 @@ class Partner(models.Model):
         link = self.stripe_connect_account_link(account.get('id'))
         
         # return link 
-        if account.get('id') and link.get('url'):
+        if account.get('id') and link:
             return link.get('url')
         else:
             return False
@@ -63,6 +63,6 @@ class Partner(models.Model):
         
         # return link 
         if account and link.get('url'):
-            return link.get('url')
+            return link
         else:
             return False
