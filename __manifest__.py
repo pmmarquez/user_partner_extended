@@ -10,7 +10,8 @@
         - ADD res.partner several info fields
         - ADD product classification (service, cost)
         - ADD partner product.supplierinfo relation to create subscriptions to products from partner creation
-        - ADD docs_check field to know when vendor needs documents check 
+        - ADD docs_check field to know when vendor needs documents check
+        - ADD create partnet stripe connect account  
     """,
 
     'author': "pmmarquez@gmx.com",
@@ -18,7 +19,7 @@
     'category': 'Administration',
     'version': '0.1',
     
-    'depends': ['base','product'],
+    'depends': ['base','product','payment_stripe'],
 
     # always loaded
     'data': [

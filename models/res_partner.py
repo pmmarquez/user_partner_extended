@@ -2,7 +2,7 @@
 # Part of Odoo. See LICENSE file for full copyright and licensing details.
 
 from odoo import api, fields, models, _
-
+import werkzeug.wsgi
 class Partner(models.Model):
     _inherit = 'res.partner'
 
@@ -29,3 +29,30 @@ class Partner(models.Model):
         for user in users:
             user.partner_id.docs_check = True
         return True
+
+    def stripe_express_connect_account(self):
+
+        payment_stripe = self.env['payment.acquirer'].search([('provider', '=', 'stripe')])
+        # create express account
+        s2s_data_account = {
+            'type': 'express',
+            'ccountry': 'ES',
+            'email': self.email,
+        }
+        account = payment_stripe._stripe_request('accounts', s2s_data_account)
+
+        # create account link
+        s2s_data_account_link = {
+            'account': account.get('id'),
+            'refresh_url':"http:" + werkzeug.wsgi.get_host + "/reauth",
+            'return_url': "http:" + werkzeug.wsgi.get_host + "/return",
+            'type':'account_onboarding'
+        }
+
+        link = payment_stripe._stripe_request('account_links', s2s_data_account_link)
+        
+        # return link 
+        if account.get('id') and link.get('url'):
+            return link.get('url')
+        else:
+            return False
