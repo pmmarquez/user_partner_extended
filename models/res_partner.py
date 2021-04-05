@@ -36,7 +36,7 @@ class Partner(models.Model):
         # create express account
         s2s_data_account = {
             'type': 'express',
-            'ccountry': 'ES',
+            'country': 'ES',
             'email': self.email,
         }
         account = payment_stripe._stripe_request('accounts', s2s_data_account)
@@ -44,8 +44,8 @@ class Partner(models.Model):
         # create account link
         s2s_data_account_link = {
             'account': account.get('id'),
-            'refresh_url':"http:" + werkzeug.wsgi.get_host + "/reauth",
-            'return_url': "http:" + werkzeug.wsgi.get_host + "/return",
+            'refresh_url':"http://45.93.100.18:8069/reauth",
+            'return_url': "http://45.93.100.18:8069/return",
             'type':'account_onboarding'
         }
 
