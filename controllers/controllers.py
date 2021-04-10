@@ -1,21 +1,20 @@
 # -*- coding: utf-8 -*-
-# from odoo import http
+import logging
+import werkzeug
+
+from odoo import http
+from odoo.http import request
 
 
-# class SalePurchaseExtended(http.Controller):
-#     @http.route('/sale_purchase_extended/sale_purchase_extended/', auth='public')
-#     def index(self, **kw):
-#         return "Hello, world"
+class StripeLinkController(http.Controller):
 
-#     @http.route('/sale_purchase_extended/sale_purchase_extended/objects/', auth='public')
-#     def list(self, **kw):
-#         return http.request.render('sale_purchase_extended.listing', {
-#             'root': '/sale_purchase_extended/sale_purchase_extended',
-#             'objects': http.request.env['sale_purchase_extended.sale_purchase_extended'].search([]),
-#         })
+    @http.route('/payment/stripe/reauth', type='http', auth='none')
+    def stripe_refresh_account_link(self,**kwargs):
+        data = kwargs.copy()
+        link = request.env['res.partner'].sudo().search([('id', '=', data['partner_id'])]).stripe_connect_account_link(data['account_id'], data['reauth_url'], data['return_url'])
+        if (link):
+            return werkzeug.utils.redirect(link.get('url'))
+        else:
+            return '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN"><title>Redirecting...</title><h1>Link Generation Error</h1>'
+        
 
-#     @http.route('/sale_purchase_extended/sale_purchase_extended/objects/<model("sale_purchase_extended.sale_purchase_extended"):obj>/', auth='public')
-#     def object(self, obj, **kw):
-#         return http.request.render('sale_purchase_extended.object', {
-#             'object': obj
-#         })

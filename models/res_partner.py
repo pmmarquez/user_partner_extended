@@ -67,8 +67,8 @@ class Partner(models.Model):
         # create account link
         s2s_data_account_link = {
             'account': account_id,
-            'refresh_url': reauth_url + '?account_id=' + account_id + '&partner_id=' + str(self.id) + '&reauth_url=' + reauth_url,
-            'return_url': return_url + '?account_id=' + account_id + '&partner_id=' + str(self.id) + '&return_url=' + return_url,
+            'refresh_url': reauth_url + '?account_id=' + account_id + '&partner_id=' + str(self.id) + '&reauth_url=' + reauth_url + '&return_url=' + return_url,
+            'return_url': return_url + '?account_id=' + account_id + '&partner_id=' + str(self.id) + '&reauth_url=' + reauth_url + '&return_url=' + return_url,
             'type':'account_onboarding'
         }
         link = payment_stripe._stripe_request('account_links', s2s_data_account_link)
