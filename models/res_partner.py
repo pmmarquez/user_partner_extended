@@ -59,6 +59,9 @@ class Partner(models.Model):
         if account.get('id') and link:
             self.stripe_connect_account_id = account.get('id')
             self.stripe_connect_account_state = 'created'
+            self.env['bus.bus'].sendone(
+                self._cr.dbname + '_' + str(self.id),
+                {'type': 'stripe_account_vendor_notification', 'action':'created', "account_id":account.get('id')})
             return return_data
         else:
             return False
@@ -75,6 +78,9 @@ class Partner(models.Model):
         link = payment_stripe._stripe_request('account_links', s2s_data_account_link)
         # return link 
         if account_id and link.get('url'):
+            self.env['bus.bus'].sendone(
+                self._cr.dbname + '_' + str(self.id),
+                {'type': 'stripe_account_vendor_notification', 'action':'link', "link":link.get('url')})
             self.stripe_connect_account_link = link.get('url')
             return link
         else:
@@ -85,6 +91,9 @@ class Partner(models.Model):
         response = payment_stripe._stripe_request('accounts/%s' % self.stripe_connect_account_id, data=False, method='DELETE')
         # return link 
         if response.get('deleted'):
+            self.env['bus.bus'].sendone(
+                self._cr.dbname + '_' + str(self.id),
+                {'type': 'stripe_account_vendor_notification', 'action':'deleted', "account_id":self.stripe_connect_account_id})
             self.stripe_connect_account_id = False
             self.stripe_connect_account_link = False
             self.stripe_connect_account_state = 'false'
@@ -97,6 +106,9 @@ class Partner(models.Model):
         response = payment_stripe._stripe_request('accounts/%s' % self.stripe_connect_account_id, data=False, method='GET')
         # return link 
         if response.get('payouts_enabled'):
+            self.env['bus.bus'].sendone(
+                self._cr.dbname + '_' + str(self.id),
+                {'type': 'stripe_account_vendor_notification', 'action':'verified', "account_id":self.stripe_connect_account_id})
             self.stripe_connect_account_state = 'verified'
             return True
         else:
