@@ -75,7 +75,7 @@ class Partner(models.Model):
         link = payment_stripe._stripe_request('account_links', s2s_data_account_link)
         # return link 
         if account_id and link.get('url'):
-            stripe_connect_account_link = link.get('url')
+            self.stripe_connect_account_link = link.get('url')
             return link
         else:
             return False
@@ -86,6 +86,7 @@ class Partner(models.Model):
         # return link 
         if response.get('deleted'):
             self.stripe_connect_account_id = False
+            self.stripe_connect_account_link = False
             self.stripe_connect_account_state = 'false'
             return response
         else:
