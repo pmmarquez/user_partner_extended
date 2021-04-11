@@ -26,6 +26,7 @@ class Partner(models.Model):
     docs_check = fields.Boolean(default=True) #true when partner needs docs check
 
     stripe_connect_account_id = fields.Char('Stripe connect account')
+    stripe_connect_account_link = fields.Char('Stripe connect account link')
     stripe_connect_account_state = fields.Selection(selection=[
             ('false', 'False'),
             ('created', 'Created'),
@@ -48,7 +49,7 @@ class Partner(models.Model):
         }
         account = payment_stripe._stripe_request('accounts', s2s_data_account)
         # create account link
-        link = self.stripe_connect_account_link(account.get('id'), reauth_url, return_url)
+        link = self.generate_stripe_connect_account_link(account.get('id'), reauth_url, return_url)
         return_data = {
             'partner_id': self.id,
             'account_id': account.get('id'),
@@ -62,7 +63,7 @@ class Partner(models.Model):
         else:
             return False
     
-    def stripe_connect_account_link(self, account_id, reauth_url, return_url):
+    def generate_stripe_connect_account_link(self, account_id, reauth_url, return_url):
         payment_stripe = self.env['payment.acquirer'].search([('provider', '=', 'stripe')])
         # create account link
         s2s_data_account_link = {
@@ -74,6 +75,7 @@ class Partner(models.Model):
         link = payment_stripe._stripe_request('account_links', s2s_data_account_link)
         # return link 
         if account_id and link.get('url'):
+            stripe_connect_account_link = link.get('url')
             return link
         else:
             return False
@@ -86,5 +88,15 @@ class Partner(models.Model):
             self.stripe_connect_account_id = False
             self.stripe_connect_account_state = 'false'
             return response
+        else:
+            return False
+    
+    def verify_stripe_connect_account(self):
+        payment_stripe = self.env['payment.acquirer'].search([('provider', '=', 'stripe')])
+        response = payment_stripe._stripe_request('accounts/%s' % self.stripe_connect_account_id, data=False, method='GET')
+        # return link 
+        if response.get('payouts_enabled'):
+            self.stripe_connect_account_state = 'verified'
+            return True
         else:
             return False
